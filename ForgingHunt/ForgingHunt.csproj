@@ -68,7 +68,6 @@
         <Compile Include="Forge\Forge.cs" />
         <Compile Include="Forge\ForgeItems\Crucible.cs" />
         <Compile Include="Forge\ForgeItems\Metal\Metal.cs" />
-        <Compile Include="Forge\ForgeItems\Metal\MetalModule.cs" />
         <Compile Include="Manager.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>

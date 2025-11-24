@@ -22,6 +22,5 @@ namespace ForgingHunt.Forge
             crucibleRacks.Add(rack2.gameObject.AddComponent<CrucibleRack>());
             crucibleRacks.Add(rack3.gameObject.AddComponent<CrucibleRack>());
         }
-        
     }
 }

@@ -32,8 +32,57 @@ namespace ForgingHunt.Forge.ForgeItems
             MinMetalCount = minMetalCount;
         }
 
-        public virtual void AddMetal(MetalTypes type)
+        private void OnTriggerEnter(Collider other)
         {
+            if (other.GetComponentInParent<Item>() is Item item)
+            {
+                if (item.data.category.Equals(Manager.Valuables) || item.data.category.Equals(Manager.Crystals))
+                {
+                    AddMetal(item);
+                }
+            }
+        }
+
+        public virtual void AddMetal(Item item)
+        {
+            MetalTypes type = MetalTypes.LowQuality;
+            if (item.data.category.Equals(Manager.Valuables))
+            {
+                if (item.data.value <= 50.0)
+                {
+                    type = MetalTypes.LowQuality;
+                }
+                else type = MetalTypes.HighQuality;
+            }
+            else if (item.data.category.Equals(Manager.Crystals))
+            {
+                switch (item.data.displayName.ToLower())
+                {
+                    case string s when s.Contains("fire"):
+                        type = MetalTypes.FireCrystal;
+                        break;
+                    case string s when s.Contains("lightning"):
+                        type = MetalTypes.LightningCrystal;
+                        break;
+                    case string s when s.Contains("gravity"):
+                        type = MetalTypes.GravityCrystal;
+                        break;
+                    case string s when s.Contains("body"):
+                        type = MetalTypes.BodyCrystal;
+                        break;
+                    case string s when s.Contains("mind"):
+                        type = MetalTypes.MindCrystal;
+                        break;
+                    default:
+                        type = MetalTypes.LowQuality;
+                        break;
+                }
+            }
+
+            Metal.Metal metal = new Metal.Metal((int) item.data.value / 2, type);
+            
+            if(!CurrentMetalMixtureRatio.ContainsKey(metal)) CurrentMetalMixtureRatio.Add(metal, 1);
+            else  CurrentMetalMixtureRatio[metal]++;
         }
 
         public virtual int GenerateMixtureHardness()
@@ -52,8 +101,8 @@ namespace ForgingHunt.Forge.ForgeItems
         {
             var ex = HandleCountExceptions();
             if (ex != null) throw ex;
-            
-            int totalTimeToMelt = CurrentMetalMixtureRatio.Max(p => p.Key.MeltTime);
+
+            int totalTimeToMelt = CurrentMetalMixtureRatio.Max(p => p.Key.MeltTime) / CurrentMetalMixtureRatio.Count;
             
             //allow melt in update
             //sudo code here
@@ -71,6 +120,9 @@ namespace ForgingHunt.Forge.ForgeItems
             if (CurrentMetalMixtureRatio.Count == 0) return new MetalException("Metal count is zero. No metal is in the crucible.");
             return null;
         }
+        
+        
+        
         private void Update()
         {
             //run code to do a shader and deform metal nodes
