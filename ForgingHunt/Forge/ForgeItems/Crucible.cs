@@ -45,6 +45,7 @@ namespace ForgingHunt.Forge.ForgeItems
 
         public virtual void AddMetal(Item item)
         {
+            int hardness = 0;
             MetalTypes type = MetalTypes.LowQuality;
             if (item.data.category.Equals(Manager.Valuables))
             {
@@ -53,6 +54,8 @@ namespace ForgingHunt.Forge.ForgeItems
                     type = MetalTypes.LowQuality;
                 }
                 else type = MetalTypes.HighQuality;
+
+                hardness = (int) item.data.value / 3;
             }
             else if (item.data.category.Equals(Manager.Crystals))
             {
@@ -77,24 +80,40 @@ namespace ForgingHunt.Forge.ForgeItems
                         type = MetalTypes.LowQuality;
                         break;
                 }
+
+                hardness = 0;
             }
 
-            Metal.Metal metal = new Metal.Metal((int) item.data.value / 2, type);
+            Metal.Metal metal = new Metal.Metal((int) item.data.value / 2, type,hardness);
             
             if(!CurrentMetalMixtureRatio.ContainsKey(metal)) CurrentMetalMixtureRatio.Add(metal, 1);
             else  CurrentMetalMixtureRatio[metal]++;
         }
 
-        public virtual int GenerateMixtureHardness()
+        public virtual int GenerateMaximumMixtureHardness()
         {
-            //determine if carnage reborn is sufficient and implement api for sword deformation.
-            return 0;
+            int maximumHardness = 0;
+
+            foreach (var kvp in  CurrentMetalMixtureRatio)
+            {
+                maximumHardness += kvp.Key.Hardness;
+            }
+
+            return maximumHardness;
         }
 
-        public virtual List<string> GeneratePropertiesOfMixture()
+        public virtual MixtureRatioValues GenerateRatioOfMixture()
         {
-            //implement when mixture is determined for abilities
-            return new List<string>();
+            return new MixtureRatioValues.Builder()
+                .WithFireRatio(CurrentMetalMixtureRatio.Where(p => p.Key.MetalType.Equals(MetalTypes.FireCrystal))
+                    .Select(p => p.Value).Sum())
+                .WithGravityRatio(CurrentMetalMixtureRatio.Where(p => p.Key.MetalType.Equals(MetalTypes.GravityCrystal))
+                    .Select(p => p.Value).Sum())
+                .WithLightningRatio(CurrentMetalMixtureRatio.Where(p => p.Key.MetalType.Equals(MetalTypes.LightningCrystal))
+                    .Select(p => p.Value).Sum())
+                .WithMetalRatio(CurrentMetalMixtureRatio.Where(p => p.Key.MetalType.Equals(MetalTypes.LowQuality) || p.Key.MetalType.Equals(MetalTypes.HighQuality))
+                    .Select(p => p.Value).Sum())
+                .Build();
         }
 
         public IEnumerator Melt()

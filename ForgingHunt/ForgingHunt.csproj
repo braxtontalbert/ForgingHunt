@@ -33,6 +33,9 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="CarnageReborn">
+          <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Blade &amp; Sorcery\BladeAndSorcery_Data\StreamingAssets\Mods\CarnageReborn\CarnageReborn.dll</HintPath>
+        </Reference>
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
@@ -68,6 +71,7 @@
         <Compile Include="Forge\Forge.cs" />
         <Compile Include="Forge\ForgeItems\Crucible.cs" />
         <Compile Include="Forge\ForgeItems\Metal\Metal.cs" />
+        <Compile Include="Forge\ForgeItems\MixtureRatioValues.cs" />
         <Compile Include="Manager.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>

@@ -6,11 +6,13 @@ namespace ForgingHunt.Forge.ForgeItems.Metal
     {
         public int MeltTime { get; set; }
         public MetalTypes MetalType { get; set; }
+        public int Hardness { get; set; }
 
-        public Metal(int meltTime, MetalTypes metalType)
+        public Metal(int meltTime, MetalTypes metalType, int hardness)
         {
             MeltTime = meltTime;
             MetalType = metalType;
+            Hardness = hardness;
         }
     }
 }
